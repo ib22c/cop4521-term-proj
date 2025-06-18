@@ -58,7 +58,7 @@ def create_tables_roles():
 
     cursor.execute('CREATE TABLE IF NOT EXISTS Customers (' +
                    'customer_id INT PRIMARY KEY, ' +
-                   'customer_name VARCHAR(100)')
+                   'customer_name VARCHAR(100))')
 
     cursor.execute('CREATE TABLE IF NOT EXISTS Inventory (book_id INT PRIMARY KEY, Quantity INTEGER, FOREIGN KEY(book_id) REFERENCES Book(book_id))')
     cursor.execute('CREATE TABLE IF NOT EXISTS Transactions (' +

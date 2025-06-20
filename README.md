@@ -7,7 +7,7 @@ A web-based bookstore platform built with Flask and PostgreSQL, featuring role-b
 - **User Roles & Authentication**
 
   - Customer: Browse products, manage cart, place orders
-  - Vendor: List products, manage inventory, track sales
+  - Vendor: List products, manage inventory, track sales 
   - Employee: Process orders, update inventory, customer service
   - Admin: Full system access and configuration
 

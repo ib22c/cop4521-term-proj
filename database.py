@@ -29,11 +29,11 @@ def initialize_db():
 def get_db_connection():
     conn = None
     conn = psycopg2.connect(
-        host=DB_HOST,
-        database=DB_NAME,
-        user=DB_USER,
-        password=DB_PASS,
-        port=DB_PORT
+    host=DB_HOST,
+    database='dejiji_db',
+    user=DB_USER,
+    password=DB_PASS,
+    port=DB_PORT
     )
     print('Successfully connected to the database.')
     return conn
@@ -43,7 +43,8 @@ def create_tables_roles():
     conn = None
     conn = get_db_connection()
     cursor = conn.cursor()
-
+    
+    #tables created: Category, Authors, Book, Customer, Inventory, Transactions
     cursor.execute('CREATE TABLE IF NOT EXISTS Category (category_id INT PRIMARY KEY, category_name VARCHAR(100))')
     cursor.execute('CREATE TABLE IF NOT EXISTS Author (author_id INT PRIMARY KEY, author_name VARCHAR(100))')
 
@@ -65,17 +66,47 @@ def create_tables_roles():
                 'transaction_id INT PRIMARY KEY, ' +
                 'transaction_total INT, ' + 
                 'transaction_date DATE, ' + 
+                'customer_id INT, ' +
+                'book_id INT, ' +
                 'FOREIGN KEY(customer_id) REFERENCES Customers(customer_id), ' +
                 'FOREIGN KEY(book_id) REFERENCES Book(book_id))')
     
 
     #create role customer
-    cursor.execute('CREATE ROLE Customer')
-    cursor.execute('GRANT SELECT ON Category, Author, Book, Inventory TO Customer')
-    cursor.execute('GRANT SELECT (transaction_total, transaction_date) ON Transactions TO Customer')
+    cursor.execute("SELECT 1 FROM pg_roles WHERE rolname = 'Customer'")
+    exists = cursor.fetchone()
+
+    if not exists:
+        cursor.execute('CREATE ROLE "Customer"')
+    cursor.execute('GRANT SELECT ON Category, Author, Book, Inventory TO "Customer"')
+    cursor.execute('GRANT SELECT (transaction_total, transaction_date) ON Transactions TO "Customer"')
 
 
+    #conditionally create role of employee
+    cursor.execute("SELECT 1 FROM pg_roles WHERE rolname = 'Employee'")
+    exists = cursor.fetchone()
+
+    if not exists:
+        cursor.execute('CREATE ROLE "Employee"')
+    cursor.execute('GRANT INSERT, UPDATE, DELETE ON Customers TO "Employee"')
+    cursor.execute('GRANT INSERT, UPDATE, DELETE ON Inventory TO "Employee"')
+    cursor.execute('GRANT INSERT, UPDATE, DELETE ON Transactions TO "Employee"') #when employee checks out customer, new data is entered into table about transaction?
     
+
+    #create role of vendor
+    cursor.execute("SELECT 1 FROM pg_roles WHERE rolname = 'Vendor'")
+    exists = cursor.fetchone()
+
+    if not exists:
+        cursor.execute('CREATE ROLE "Vendor"')
+
+
+    cursor.execute('GRANT INSERT, UPDATE, DELETE ON Inventory TO "Vendor"')
+    cursor.execute('GRANT INSERT, UPDATE, DELETE ON Book TO "Vendor"')
+    cursor.execute('GRANT INSERT, UPDATE, DELETE ON Author TO "Vendor"')
+    cursor.execute('GRANT INSERT, UPDATE, DELETE ON Category TO "Vendor"')
+
+
     conn.commit()
     cursor.close()
     conn.close()

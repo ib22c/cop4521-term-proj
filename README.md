@@ -25,7 +25,7 @@ A web-based bookstore platform built with Flask and PostgreSQL, featuring role-b
 - **Authentication**: Flask-Login, Flask-Security
 
 
-### How to create and connect you own database
+### How to create and connect you to own database
 so as of right now, we are going to stick to using and running our own databases on your local machines. Sharanya is currently working with the IT department for us to work with Azure which will help us move from our local machines to a shared and accessible platform which will need to happen anyways according to sharanya so the quicker the better. 
 
 read this to help: https://neon.com/postgresql/postgresql-python/connect 
@@ -41,4 +41,4 @@ create an .env file for your personal use
 DB_NAME='dejiji_db'
 DB_USER='xxx'
 DB_PASS='xxx'
-the xxx comes from when you set up PGAdmin and will vary between everyone
+the xxx comes from when you set up PGAdmin and will vary between everyone for now until we get access to Azure

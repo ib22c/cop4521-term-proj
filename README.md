@@ -46,4 +46,4 @@ the xxx comes from when you set up PGAdmin and will vary between everyone for no
 ###HTML pages to add### 
 Customer: home, login, sign up, about us, cart that leads to checkout, search, customer service
 Vendor: insert/delete/traking sales of books
-Employee/Owner: customer service (insert transacion id to look up/ query by name), access to everything else (no vendor)
+Employee/Owner: customer service (insert transacion id to look up/ query by name), access to everything else

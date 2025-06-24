@@ -43,7 +43,7 @@ DB_USER='xxx'
 DB_PASS='xxx'
 the xxx comes from when you set up PGAdmin and will vary between everyone for now until we get access to Azure
 
-***** HTML pages to add ****
+###HTML pages to add###
 Customer: home, login, sign up, about us, checkout (need cart), search, customer service
 Vendor: insert/delete/traking sales of books
 Employee/Owner: customer service (insert transacion id to look up/ query by name), access to everything else (no vendor)

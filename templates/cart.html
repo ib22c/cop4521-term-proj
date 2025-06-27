@@ -1,1 +1,83 @@
-### page for user to see all the books they are deciding to buy. This will have a link to allow the person to go to the checkout html to finish session
+### page for user to see all the books they are deciding to buy. This will have
+a link to allow the person to go to the checkout html to finish session
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Your Cart</title>
+    <style>
+      body {
+        font-family: Georgia, serif;
+        background-color: #f9f6f1;
+        color: #333;
+        margin: 0;
+        padding: 0;
+      }
+      header {
+        background-color: #5c4033;
+        color: white;
+        padding: 1.5em 0;
+        text-align: center;
+      }
+      nav {
+        background-color: #d1bfa7;
+        display: flex;
+        justify-content: center;
+        gap: 2em;
+        padding: 1em;
+      }
+      nav a {
+        text-decoration: none;
+        color: #3e2f23;
+        font-weight: bold;
+      }
+      nav a:hover {
+        text-decoration: underline;
+      }
+      main {
+        padding: 2em;
+        text-align: center;
+      }
+      .highlight {
+        font-size: 1.2em;
+        margin-top: 1em;
+        color: #5c4033;
+      }
+      footer {
+        text-align: center;
+        padding: 1em;
+        background-color: #eee;
+        font-size: 0.9em;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Dejiji Bookstore</h1>
+      <p>Your Cart</p>
+    </header>
+
+    <nav>
+      <a href="/">Home</a>
+      <a href="../templates/searchbooks.html">Search For More</a>
+    </nav>
+    <main>
+      <!-- something like this later when we set up the code -->
+      <!-- <h2>Your Selected Books</h2>
+      <ul>
+        {% for book in cart %}
+        <li>{{ book.title }} - ${{ book.price }}</li>
+        {% endfor %}
+      </ul>
+
+      <p class="highlight">Total: ${{ total_price }}</p> -->
+
+      <a href="..templates/checkout.html" class="highlight"
+        >Proceed to Checkout</a
+      >
+    </main>
+
+    <footer>&copy; 2025 DEJIJI. All rights reserved or else.</footer>
+  </body>
+</html>

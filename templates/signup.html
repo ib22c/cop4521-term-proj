@@ -1,1 +1,77 @@
-### where people can make a new account, and when they make new account they are in a session
+### where people can make a new account, ### and when they make new account they
+are in a session
+
+<!DOCTYPE html>
+<html lang="en">
+  <style>
+    body {
+      font-family: Georgia, serif;
+      background-color: #f9f6f1;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #5c4033;
+      color: white;
+      padding: 1.5em 0;
+      text-align: center;
+    }
+    nav {
+      background-color: #d1bfa7;
+      display: flex;
+      justify-content: center;
+      gap: 2em;
+      padding: 1em;
+    }
+    nav a {
+      text-decoration: none;
+      color: #3e2f23;
+      font-weight: bold;
+    }
+    nav a:hover {
+      text-decoration: underline;
+    }
+    main {
+      padding: 2em;
+      text-align: center;
+    }
+    .highlight {
+      font-size: 1.2em;
+      margin-top: 1em;
+      color: #5c4033;
+    }
+    footer {
+      text-align: center;
+      padding: 1em;
+      background-color: #eee;
+      font-size: 0.9em;
+    }
+  </style>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Dejiji Bookstore - Sign Up</title>
+  </head>
+  <body>
+    <header>
+      <h1>Sign Up For Dejiji Bookstore</h1>
+      <p>Your simply set up quirky local bookstore for all your literary needs!</p>
+    </header>
+
+    <main>
+      <h2>Create a New Account</h2>
+      <form action="/signup" method="post">
+        <label for="username">Username:</label><br />
+        <input type="text" id="username" name="username" required /><br />
+        <label for="email">Email:</label><br />
+        <input type="email" id="email" name="email" required /><br />
+        <label for="password">Password:</label><br />
+        <input type="password" id="password" name="password" required /><br />
+        <button type="submit">Sign Up</button>
+      </form>
+    </main>
+
+    <footer>
+      &copy; 2023 Dejiji Bookstore. All rights reserved.
+    </footer>
+</html>

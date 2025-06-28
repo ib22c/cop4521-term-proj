@@ -1,1 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Book Manager</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 30px;
+      background-color: #f0f0f0;
+      max-width: 800px;
+      margin: auto;
+    }
+    h1 { text-align: center; }
+
+    form {
+      background-color: white;
+      padding: 20px;
+      margin-bottom: 30px;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 10px;
+    }
+
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      margin-top: 15px;
+      background-color: #0074D9;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    th, td {
+      padding: 10px;
+      border: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #0074D9;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Book Manager</h1>
+
+  <form action="/insert" method="post">
+    <h2>Insert Book</h2>
+    <label>Title:</label>
+    <input type="text" name="title" required />
+    <label>Author:</label>
+    <input type="text" name="author" required />
+    <label>Price:</label>
+    <input type="number" step="0.01" name="price" required />
+    <label>ISBN:</label>
+    <input type="text" name="isbn" required />
+    <button type="submit">Add Book</button>
+  </form>
+
+  <form action="/delete" method="post">
+    <h2>Delete Book</h2>
+    <label>ISBN:</label>
+    <input type="text" name="isbn" required />
+    <button type="submit">Delete Book</button>
+  </form>
+
+  <h2>Current Books</h2>
+  <table>
+    <tr>
+      <th>Title</th>
+      <th>Author</th>
+      <th>Price</th>
+      <th>ISBN</th>
+    </tr>
+    {% for book in books %}
+    <tr>
+      <td>{{ book.title }}</td>
+      <td>{{ book.author }}</td>
+      <td>${{ book.price }}</td>
+      <td>{{ book.isbn }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+
+</body>
+</html>
 ### for vendors to insert or delete books into the store

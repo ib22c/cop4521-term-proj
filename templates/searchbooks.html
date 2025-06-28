@@ -1,1 +1,82 @@
-### Shows result of books inserted into the search box on home page/anywhere else
+<!--- Shows result of books inserted into the search box on home page/anywhere else--->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Search Book by ISBN</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      padding: 30px;
+      max-width: 600px;
+      margin: auto;
+    }
+    h1 {
+      text-align: center;
+    }
+    form {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+    button {
+      margin-top: 15px;
+      background-color: #0074D9;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #005fa3;
+    }
+    .result {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .not-found {
+      color: red;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Search for a Book</h1>
+
+  <form method="POST">
+    <label for="isbn">Enter ISBN:</label>
+    <input type="text" id="isbn" name="isbn" placeholder="e.g. 9780451524935" required />
+    <button type="submit">Search</button>
+  </form>
+
+  {% if query %}
+    {% if result %}
+      <div class="result">
+        <h2>Book Found</h2>
+        <p><strong>Title:</strong> {{ result.title }}</p>
+        <p><strong>Author:</strong> {{ result.author }}</p>
+        <p><strong>Price:</strong> ${{ result.price }}</p>
+        <p><strong>ISBN:</strong> {{ result.isbn }}</p>
+      </div>
+    {% else %}
+      <p class="not-found">No book found with ISBN: {{ query }}</p>
+    {% endif %}
+  {% endif %}
+
+</body>
+</html>
+

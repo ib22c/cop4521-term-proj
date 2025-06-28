@@ -1,1 +1,104 @@
-### for the owner to see any complaints. They will also have access to everything else
+<!-- for the owner to see any complaints. They will also have access to everything else-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Customer Service - Complaints</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      padding: 30px;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    .complaint {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-left: 5px solid #e63946;
+      border-radius: 5px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+
+    .complaint h3 {
+      margin-top: 0;
+      color: #e63946;
+    }
+
+    .complaint p {
+      margin: 5px 0;
+    }
+
+    .complaint .label {
+      font-weight: bold;
+    }
+
+    .response {
+      margin-top: 10px;
+    }
+
+    textarea {
+      width: 100%;
+      padding: 8px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      resize: vertical;
+    }
+
+    button {
+      margin-top: 8px;
+      background-color: #0074d9;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #005fa3;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Customer Complaints</h1>
+
+  <!-- Complaint Example 1 -->
+  <div class="complaint">
+    <h3>Complaint #001</h3>
+    <p><span class="label">Order Number:</span> 45231</p>
+    <p><span class="label">Type:</span> Damaged Item</p>
+    <p><span class="label">Details:</span> The book arrived with a torn cover and water damage on several pages.</p>
+
+    <div class="response">
+      <label for="response-001"><strong>Your Response:</strong></label>
+      <textarea id="response-001" rows="3" placeholder="Write a response to this complaint..."></textarea>
+      <button>Send Response</button>
+    </div>
+  </div>
+
+  <!-- Complaint Example 2 -->
+  <div class="complaint">
+    <h3>Complaint #002</h3>
+    <p><span class="label">Order Number:</span> 46897</p>
+    <p><span class="label">Type:</span> Wrong Item Received</p>
+    <p><span class="label">Details:</span> I ordered '1984' but received 'Animal Farm' instead.</p>
+
+    <div class="response">
+      <label for="response-002"><strong>Your Response:</strong></label>
+      <textarea id="response-002" rows="3" placeholder="Write a response to this complaint..."></textarea>
+      <button>Send Response</button>
+    </div>
+  </div>
+
+</body>
+</html>
+

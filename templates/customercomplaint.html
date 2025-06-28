@@ -1,1 +1,81 @@
-### allow for customer to file any complaints
+<!--will say about this one is how to keep track of complaints?-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Customer Complaint Form</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f8f8;
+      padding: 30px;
+      max-width: 600px;
+      margin: auto;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    textarea {
+      resize: vertical;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #e63946;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #c92c3a;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Customer Complaint Form</h1>
+
+  <form action="#" method="post">
+    <label for="order-number">Order Number (optional):</label>
+    <input type="text" id="order-number" name="order-number" />
+
+    <label for="complaint-type">Complaint Type:</label>
+    <select id="complaint-type" name="complaint-type" required>
+      <option value="">-- Please select --</option>
+      <option value="late-delivery">Late Delivery</option>
+      <option value="damaged-item">Damaged Item</option>
+      <option value="wrong-item">Wrong Item Received</option>
+      <option value="billing-issue">Billing Issue</option>
+      <option value="other">Other</option>
+    </select>
+
+    <label for="message">Complaint Details:</label>
+    <textarea id="message" name="message" rows="5" placeholder="Describe the issue in detail..." required></textarea>
+
+    <button type="submit">Submit Complaint</button>
+  </form>
+
+</body>
+</html>

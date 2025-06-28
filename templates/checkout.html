@@ -1,1 +1,90 @@
 ### get to this page from the cart, allows person to buy book (end session?)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Bookstore Checkout</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      padding: 30px;
+      max-width: 500px;
+      margin: auto;
+    }
+    h1, h2 {
+      text-align: center;
+      color: #222;
+    }
+    .cart {
+      background: #fff;
+      padding: 15px;
+      border-radius: 5px;
+      margin-top: 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .cart ul {
+      list-style: none;
+      padding: 0;
+    }
+    .cart li {
+      margin-bottom: 10px;
+    }
+    .total {
+      margin-top: 15px;
+      font-weight: bold;
+      text-align: right;
+    }
+    label {
+      display: block;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+    select {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #218838;
+    }
+  </style>
+</head>
+<body>
+  <h1>Bookstore Checkout</h1>
+
+  <form action="#" method="post">
+    <div class="cart">
+      <h2>Your Cart</h2>
+      <ul>
+        <li>The Great Gatsby - $10.99</li>
+        <li>1984 - $8.99</li>
+        <li>To Kill a Mockingbird - $9.99</li>
+      </ul>
+      <div class="total">Total: $29.97</div>
+    </div>
+
+    <label for="payment">Payment Method:</label>
+    <select id="payment" name="payment" required>
+      <option value="">-- Select Payment Method --</option>
+      <option value="credit">Credit Card</option>
+      <option value="paypal">PayPal</option>
+      <option value="gift">Gift Card</option>
+    </select>
+
+    <button type="submit">Checkout</button>
+  </form>
+</body>
+</html>
+

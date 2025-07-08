@@ -24,7 +24,21 @@ def initialize_db():
     cursor.close()
     conn.close()
 
-
+def drop_tables():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    cursor.execute('DROP TABLE IF EXISTS Transactions CASCADE')
+    cursor.execute('DROP TABLE IF EXISTS Inventory CASCADE')
+    cursor.execute('DROP TABLE IF EXISTS Book CASCADE')
+    cursor.execute('DROP TABLE IF EXISTS Author CASCADE')
+    cursor.execute('DROP TABLE IF EXISTS Category CASCADE')
+    cursor.execute('DROP TABLE IF EXISTS Customers CASCADE')
+    print("Successfully dropped all tables.")
+    
+    conn.commit()
+    cursor.close()
+    conn.close()
 
 def get_db_connection():
     conn = None
@@ -35,7 +49,8 @@ def get_db_connection():
     password=DB_PASS,
     port=DB_PORT
     )
-    print('Successfully connected to the database.')
+    # only want for debug purposes
+    # print('Successfully connected to the database.')
     return conn
 
 def create_tables_roles():
@@ -54,6 +69,7 @@ def create_tables_roles():
                 'author_id INT, ' +
                 'category_id INT, ' +
                 'price INT, ' +
+                'image_id VARCHAR(100), ' + 
                 'FOREIGN KEY(author_id) REFERENCES Author(author_id), ' +
                 'FOREIGN KEY(category_id) REFERENCES Category(category_id))')
 
@@ -106,12 +122,15 @@ def create_tables_roles():
     cursor.execute('GRANT INSERT, UPDATE, DELETE ON Author TO "Vendor"')
     cursor.execute('GRANT INSERT, UPDATE, DELETE ON Category TO "Vendor"')
 
+    print("Successfully initialized database")
 
     conn.commit()
     cursor.close()
     conn.close()
 
 if __name__ == '__main__':
+    if input("Drop tables? y/n: ").lower() == 'y':
+        drop_tables()
     initialize_db()
     create_tables_roles()
 

@@ -87,7 +87,15 @@ def create_tables_roles():
                 'FOREIGN KEY(customer_id) REFERENCES Customers(customer_id), ' +
                 'FOREIGN KEY(book_id) REFERENCES Book(book_id))')
     
-
+    cursor.execute('CREATE TABLE IF NOT EXISTS Users (' +
+                   'user_id VARCHAR(50) PRIMARY KEY, ' +
+                   'email VARCHAR(100) UNIQUE NOT NULL, ' +
+                   'first_name VARCHAR(50) NOT NULL, ' +
+                   'last_name VARCHAR(50) NOT NULL, ' +
+                   'password_hash VARCHAR(255) NOT NULL, ' +
+                   'role VARCHAR(20) NOT NULL DEFAULT \'Customer\', ' +
+                   'created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)')
+    
     #create role customer
     cursor.execute("SELECT 1 FROM pg_roles WHERE rolname = 'Customer'")
     exists = cursor.fetchone()

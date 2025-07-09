@@ -96,6 +96,14 @@ def create_tables_roles():
                    'role VARCHAR(20) NOT NULL DEFAULT \'Customer\', ' +
                    'created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)')
     
+    cursor.execute('CREATE TABLE IF NOT EXISTS Cart (' +
+               'cart_id SERIAL PRIMARY KEY, ' +
+               'user_id VARCHAR(50) REFERENCES Users(user_id), ' +
+               'book_id INT REFERENCES Book(book_id), ' +
+               'quantity INT DEFAULT 1, ' +
+               'added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, ' +
+               'UNIQUE(user_id, book_id))')
+    
     #create role customer
     cursor.execute("SELECT 1 FROM pg_roles WHERE rolname = 'Customer'")
     exists = cursor.fetchone()

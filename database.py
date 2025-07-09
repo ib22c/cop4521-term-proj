@@ -1,4 +1,10 @@
-# db connection and schema creation for PostgreSQL
+# This file does ALL DB Management
+# Add, Remove, Roles, UserAuth (not all of it) is contained in this file
+# please god DO NOT CHANGE ANYTHING if you do not know what is going on
+# Every other file is dependent on EVERY function in here
+# if someone changes something and it messes up processes in auth.py or app.py, I will find you :)
+# if you do make changes, branch first, do NOT commit to main
+
 import os
 import psycopg2
 

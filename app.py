@@ -199,12 +199,10 @@ def logout():
     flash('Logged out successfully!', 'success')
     return redirect(url_for('signup_selection'))
 
-@app.route('/home')
-def home():
 
-    auth_redirect = require_auth()
-    if auth_redirect:
-        return auth_redirect
+@app.route('/home')
+@require_role('Customer')
+def home():
 
     con = get_db_connection()
     cursor = con.cursor(cursor_factory=psycopg2.extras.DictCursor)
@@ -237,10 +235,9 @@ def home():
 #this is similar to a React component, it will be used across the webiste
 #when a user clicks on a book, this will flash
 @app.route('/book/<int:book_id>')
+@require_role('Customer')
 def book_detail(book_id):
-    auth_redirect = require_auth()
-    if auth_redirect:
-        return auth_redirect
+
     
     con = get_db_connection()
     cur = con.cursor(cursor_factory=psycopg2.extras.DictCursor)
@@ -264,10 +261,8 @@ def book_detail(book_id):
     return render_template('book_detail.html', book=book)
 
 @app.route('/add_to_cart/<int:book_id>', methods=['POST'])
+@require_role('Customer')
 def add_to_cart(book_id):
-    auth_redirect = require_auth()
-    if auth_redirect:
-        return auth_redirect
 
     user_id = session['user_id']
     quantity = int(request.form.get('quantity', 1))
@@ -304,10 +299,8 @@ def add_to_cart(book_id):
     return redirect(url_for('book_detail', book_id=book_id))
 
 @app.route('/cart')
+@require_role('Customer')
 def view_cart():
-    auth_redirect = require_auth()
-    if auth_redirect:
-        return auth_redirect
 
     user_id = session['user_id']
     con = get_db_connection()
@@ -377,6 +370,11 @@ def employee_dashboard():
     con.close()
 
     return render_template('employee_dashboard.html', books=books)
+
+
+
+#upload processes:
+
 
 
 

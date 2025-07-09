@@ -1,0 +1,169 @@
+<!--From Copilot-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Employee Signup - Dejiji Bookstore</title>
+    <style>
+        /* Same styles as vendor_signup.html but with employee-specific styling */
+        body {
+            font-family: Georgia, serif;
+            background-color: #f9f6f1;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .auth-container {
+            background: white;
+            padding: 2em;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border: 2px solid #d1bfa7;
+            width: 100%;
+            max-width: 400px;
+        }
+        .auth-container h1 {
+            color: #5c4033;
+            text-align: center;
+            margin-bottom: 1em;
+        }
+        .form-group {
+            margin-bottom: 1em;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5em;
+            color: #5c4033;
+            font-weight: bold;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 0.8em;
+            border: 1px solid #d1bfa7;
+            border-radius: 4px;
+            font-size: 1em;
+            box-sizing: border-box;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #5c4033;
+        }
+        .submit-btn {
+            background-color: #5c4033;
+            color: white;
+            padding: 1em;
+            border: none;
+            border-radius: 4px;
+            font-size: 1em;
+            width: 100%;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .submit-btn:hover {
+            background-color: #3e2f23;
+        }
+        .auth-links {
+            text-align: center;
+            margin-top: 1em;
+        }
+        .auth-links a {
+            color: #5c4033;
+            text-decoration: none;
+        }
+        .auth-links a:hover {
+            text-decoration: underline;
+        }
+        .flash-messages {
+            margin-bottom: 1em;
+        }
+        .flash-error {
+            background-color: #ffebee;
+            color: #c62828;
+            padding: 0.8em;
+            border-radius: 4px;
+            border: 1px solid #ffcdd2;
+        }
+        .flash-success {
+            background-color: #e8f5e8;
+            color: #2e7d32;
+            padding: 0.8em;
+            border-radius: 4px;
+            border: 1px solid #c8e6c9;
+        }
+        .employee-note {
+            background-color: #e3f2fd;
+            border: 1px solid #2196f3;
+            padding: 1em;
+            border-radius: 4px;
+            margin-bottom: 1em;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+
+<div class="auth-container">
+    <h1>Employee Registration</h1>
+    
+    <div class="employee-note">
+        <strong>Employee Account Access:</strong>
+        <ul style="margin: 0.5em 0; padding-left: 1.5em;">
+            <li>Manage all book inventory</li>
+            <li>Delete any books from the system</li>
+            <li>Access sales reports</li>
+            <li>Customer support tools</li>
+        </ul>
+        <strong>Note:</strong> Employee code required for registration.
+    </div>
+    
+    <div class="flash-messages">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <form method="POST">
+        <div class="form-group">
+            <label for="first_name">First Name:</label>
+            <input type="text" id="first_name" name="first_name" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="last_name">Last Name:</label>
+            <input type="text" id="last_name" name="last_name" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="employee_code">Employee Code:</label>
+            <input type="text" id="employee_code" name="employee_code" required placeholder="Contact admin for code">
+        </div>
+        
+        <button type="submit" class="submit-btn">Create Employee Account</button>
+    </form>
+    
+    <div class="auth-links">
+        <p><a href="{{ url_for('signup_selection') }}">← Back to account selection</a></p>
+        <p>Already have an account? <a href="{{ url_for('login') }}">Sign in here</a></p>
+    </div>
+</div>
+
+</body>
+</html>

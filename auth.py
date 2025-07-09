@@ -1,7 +1,7 @@
 import bcrypt
 import secrets
 import string
-from database import get_db_connection
+from database import *
 import psycopg2.extras 
 
 """
@@ -71,6 +71,9 @@ def create_user(email, first_name, last_name, password, role='Customer'):
         cur.close()
         con.close()
 
+        if not assign_user_role(user_id, role):
+            print("Error assigning role")
+            
         return user_id, "User creation was successful!"
 
     except Exception as e:

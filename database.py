@@ -11,6 +11,8 @@ DB_USER = os.environ.get('DB_USER')
 DB_PASS = os.environ.get('DB_PASS')
 DB_PORT = os.environ.get('DB_PORT', '5432')
 
+
+
 def initialize_db():
     conn = psycopg2.connect(
         host=DB_HOST,
@@ -70,6 +72,7 @@ def create_tables_roles():
                 'category_id INT, ' +
                 'price INT, ' +
                 'image_id VARCHAR(100), ' + 
+                'uploaded_by VARCHAR(50) REFERENCES Users(user_id), ' +
                 'FOREIGN KEY(author_id) REFERENCES Author(author_id), ' +
                 'FOREIGN KEY(category_id) REFERENCES Category(category_id))')
 
@@ -143,6 +146,63 @@ def create_tables_roles():
     conn.commit()
     cursor.close()
     conn.close()
+
+
+def assign_user_role(user_id, role):
+    con = get_db_connection()
+    cur = con.cursor()
+
+    try:
+        pg_username = f"user_{user_id.lower().replace('-', '_')}"
+
+        try:
+            cur.execute(f'CREATE USER "{pg_username}" WITH PASSWORD %s', (user_id,))
+        except psycopg2.errors.DuplicateObject:
+            pass
+
+        cur.execute(f'GRANT "{role}" TO "{pg_username}"')
+
+        con.commit()
+        return True
+    
+    except Exception as e:
+        print(f"Error assigning role: {e}")
+        con.rollback()
+        return False
+    finally:
+        cur.close()
+        con.close()
+
+def get_user_role(user_id):
+    con = get_db_connection()
+    cur = con.cursor()
+
+    try:
+        cur.execute("SELECT role FROM Users WHERE user_id = %s", (user_id,))
+        result = cur.fetchone()
+        return result[0] if result else None
+    except Exception as e:
+        print(f"Error gettin user role: {e}")
+        return None
+    finally:
+        cur.close()
+        con.close()
+
+def check_user_permission(user_id, required_role):
+    user_role = get_user_role(user_id)
+    if not user_role:
+        return False
+    
+    roles = {'Customer': 1, 'Vendor': 2, 'Employee': 3, 'Admin': 4}
+
+    user_level = roles.get(user_role, 0 )
+    required_level = roles.get(required_role, 0)
+
+    return user_level >= required_level
+
+                                    
+
+
 
 if __name__ == '__main__':
     if input("Drop tables? y/n: ").lower() == 'y':

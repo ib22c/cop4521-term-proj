@@ -1,0 +1,183 @@
+<!--From Copilot-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Employee Dashboard - Dejiji Bookstore</title>
+    <style>
+        body {
+            font-family: Georgia, serif;
+            background-color: #f9f6f1;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #5c4033;
+            color: white;
+            padding: 1.5em 0;
+            text-align: center;
+        }
+        nav {
+            background-color: #d1bfa7;
+            display: flex;
+            justify-content: center;
+            gap: 2em;
+            padding: 1em;
+        }
+        nav a {
+            text-decoration: none;
+            color: #3e2f23;
+            font-weight: bold;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        main {
+            padding: 2em;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: 2em;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1em;
+            margin-bottom: 2em;
+        }
+        .stat-card {
+            background: white;
+            padding: 1.5em;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #5c4033;
+        }
+        .stat-label {
+            color: #666;
+        }
+        .book-table {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 1em;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        th {
+            background-color: #5c4033;
+            color: white;
+        }
+        .btn {
+            padding: 0.5em 1em;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 0.9em;
+            margin-right: 0.5em;
+        }
+        .btn-edit {
+            background-color: #2196f3;
+            color: white;
+        }
+        .btn-delete {
+            background-color: #f44336;
+            color: white;
+        }
+        .add-book-btn {
+            background-color: #4caf50;
+            color: white;
+            padding: 1em 2em;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1.1em;
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 2em;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Employee Dashboard</h1>
+    <p>Manage Store Operations</p>
+</header>
+
+<nav>
+    <a href="{{ url_for('home') }}">Home</a>
+    <a href="{{ url_for('employee_dashboard') }}">Dashboard</a>
+    <a href="#customer_service">Customer Service</a>
+    <a href="{{ url_for('logout') }}">Logout</a>
+</nav>
+
+<main>
+    <div class="dashboard-header">
+        <h2>Store Management</h2>
+        <a href="#" class="add-book-btn">+ Add New Book</a>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-number">{{ books|length }}</div>
+            <div class="stat-label">Total Books</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">0</div>
+            <div class="stat-label">Pending Orders</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number">0</div>
+            <div class="stat-label">Customer Complaints</div>
+        </div>
+    </div>
+
+    <div class="book-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Uploaded By</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for book in books %}
+                <tr>
+                    <td>{{ book.title }}</td>
+                    <td>{{ book.author_name }}</td>
+                    <td>{{ book.category_name }}</td>
+                    <td>${{ book.price }}</td>
+                    <td>{{ book.uploaded_by_name or 'N/A' }}</td>
+                    <td>
+                        <a href="#" class="btn btn-edit">Edit</a>
+                        <a href="#" class="btn btn-delete" onclick="return confirm('Are you sure?')">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</main>
+
+</body>
+</html>

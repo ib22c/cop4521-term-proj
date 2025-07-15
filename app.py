@@ -3,17 +3,30 @@ from database import *
 import psycopg2.extras
 from auth import *
 from functools import wraps
+import os # for uploading files and managing on system
+from werkzeug.utils import secure_filename # hell yeah worktrain
+import uuid 
 
 
 app = Flask(__name__)
 app.secret_key = 'wubahubalub3456765' #no one guessing ts
 
 
+UPLOAD_FOLDER = 'static/images'
+ALLOWED_EXTENSIONS = {'jpg', 'jpeg'}
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
 """In check_user_permission() in database.py, I assigned each role to a number
 Customer = 1, Vendor = 2, Employee = 3, Admin = 4
 The require_role() decorator checks this
 if a page requires Vendor to access it, Employee and Admin can also access it
 If a page requires Employee, only Employee and Admin can see it, not Vendor or Customer"""
+
+# this is for security and consistency
+# it is a security vulnerability to allow unknown files to be uploaded to the system
+# this function was written by ChatGPT because idk how to do this (i do now)
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def require_role(required_role):
     def decorator(f):
@@ -286,8 +299,12 @@ def add_to_cart(book_id):
                           (user_id, book_id, quantity))
         con.commit()
         cur.execute("SELECT title FROM Book WHERE book_id = %s", (book_id,))
-        title = cur.fetchone()
-        flash(f'{title} added to cart!')
+        title_result = cur.fetchone()
+        if title_result:
+            title = title_result[0]
+            flash(f'{title} added to cart!')
+        else:
+            flash('Book added to cart!')
     
     except Exception as e:
         con.rollback()
@@ -323,6 +340,104 @@ def view_cart():
     con.close()
 
     return render_template('cart.html', cart_items=cart_items, total=total)
+
+
+@app.route('/cart/update', methods=['POST'])
+@require_role('Customer')
+def update_cart_quantity():
+    cart_id = request.form.get('cart_id')
+    action = request.form.get('action')
+
+    if not cart_id or not action:
+        flash('Invalid request')
+        return redirect(url_for('view_cart'))
+    
+    con = get_db_connection()
+    cur = con.cursor()
+
+    try:
+        cur.execute("SELECT quantity FROM Cart WHERE cart_id = %s", (cart_id,))
+        result = cur.fetchone()
+
+        if not result:
+            flash('Cart item not found')
+            return redirect(url_for('view_cart'))
+        current_quantity = result[0]
+
+        if action == 'increase':
+            new_quantity = current_quantity + 1
+        elif action == 'decrease':
+            #just to make sure it cant go negative
+            new_quantity = max(1, current_quantity - 1)
+        else:
+            flash('Invalid action')
+            return redirect(url_for('view_cart'))
+        
+        cur.execute("UPDATE Cart SET quantity = %s WHERE cart_id = %s", (new_quantity, cart_id))
+        con.commit()
+
+    except Exception as e:
+        con.rollback()
+        flash('Error updating cart')
+    finally:
+        cur.close()
+        con.close()
+    
+    return redirect(url_for('view_cart'))
+
+@app.route('/cart/remove', methods=['POST'])
+@require_role('Customer')
+def remove_from_cart():
+    cart_id = request.form.get('cart_id')
+
+    if not cart_id:
+        flash('Invalid request')
+        return redirect(url_for('view_cart'))
+    
+    con = get_db_connection()
+    cur = con.cursor()
+
+    try:
+        cur.execute("DELETE FROM Cart WHERE cart_id = %s", (cart_id,))
+        con.commit()
+    
+    except Exception as e:
+        con.rollback()
+        flash('Error removing item from cart')
+    finally:
+        cur.close()
+        con.close()
+
+    return redirect(url_for('view_cart'))
+
+@app.route('/search', methods=['GET', 'POST'])
+@require_role('Customer')
+def search():
+    books = []
+    query = ''
+    if request.method == 'POST':
+        query = request.form.get('query', '').strip()
+        if query:
+            con = get_db_connection()
+            cur = con.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+            # search by title or author name, case insensitive, partial matches (LIKE query)
+            cur.execute("""
+                SELECT b.book_id, b.title, b.price, b.image_id, a.author_name
+                FROM Book b
+                JOIN Author a ON b.author_id = a.author_id
+                WHERE LOWER(b.title) LIKE %s OR LOWER(a.author_name) LIKE %s
+                ORDER BY b.title ASC
+            """, (f'%{query.lower()}%', f'%{query.lower()}%'))
+
+            books = cur.fetchall()
+            cur.close()
+            con.close()
+        else:
+            flash('Please enter a search term', 'error')
+
+    return render_template('searchbooks.html', books=books, query=query)
+
 
 
 #dashboards:
@@ -374,9 +489,174 @@ def employee_dashboard():
 
 
 #upload processes:
+@app.route('/upload_book', methods=['GET', 'POST'])
+@require_role('Vendor')
+def upload_book():
+    user_role = get_current_user_role()
 
+    if request.method == 'POST':
+        title = request.form.get('title')
+        author_name = request.form.get('author_name')
+        category_name = request.form.get('category_name')
+        price = request.form.get('price')
+
+        book_image = request.files.get('book_image')
+        image_id = 'default_book' #if no image uploaded, go to default
+        #TODO add a default image in static
+
+        #once again i had to consult ChatGPT for help
+        if book_image and book_image.filename != '' and allowed_file(book_image.filename):
+            filename = secure_filename(book_image.filename)
+            unique_filename = f"{uuid.uuid4().hex}_{filename}"
+            image_path = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
+
+            #make sure the path exists, if this is ur first time cloning, it will not
+            os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+
+            book_image.save(image_path)
+
+            image_id = os.path.splitext(unique_filename)[0]
+
+        if not all([title, author_name, category_name, price]):
+            flash("All fields except image are required, ")
+            return render_template('upload_book.html',user_role=user_role)
+        
+        try:
+            price = int(price)
+            if price <= 0:
+                flash('Price must be a positive number')
+                return render_template('upload_book.html', user_role=user_role)
+        except ValueError:
+            flash('Price is invalid')
+            return render_template('upload_book.html',user_role=user_role)
+        
+        user_id = session['user_id']
+        success, message = add_book_to_database(title, author_name, category_name, price, image_id, user_id)
+
+        if success:
+            flash('Book uploaded!')
+            if user_role == 'Employee':
+                return redirect(url_for('employee_dashboard'))
+            else:
+                return redirect(url_for('vendor_dashboard'))
+        else:
+            flash(f'Error uploading book: {message}')
+
+    return render_template('upload_book.html', user_role=user_role)
+
+@app.route('/delete_book/<int:book_id>', methods=['POST'])
+@require_role('Vendor')
+def delete_book(book_id):
+    user_id = session['user_id']
+    user_role = get_current_user_role()
+
+    success, message = delete_book_from_database(book_id, user_id, user_role)
+
+    if success:
+        flash("Book deleted!")
+    else:
+        flash("Book failed to delete!")
+
+    if user_role == 'Employee':
+        return redirect(url_for('employee_dashboard'))
+    else:
+        return redirect(url_for('vendor_dashboard'))
+    
+#TODO: Add categories in database.py
+@app.route('/api/categories')
+@require_role('Vendor')
+def get_categories():
+    con = get_db_connection()
+    cur = con.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+    cur.execute("SELECT category_id, category_name FROM Category ORDER BY category_name")
+    categories = cur.fetchall()
+
+    cur.close()
+    con.close()
+
+    # this is for the dropdown on the upload books page
+    # im so fr i had no clue how to do this i had to ask chat
+    return  {'categories': [dict(cat) for cat in categories]}
+
+@app.route('/api/authors')
+@require_role('Vendor')
+def get_authors():
+    con = get_db_connection()
+    cur = con.cursor(cursor_factory=psycopg2.extras.DictCursor)
+
+    cur.execute("SELECT author_id, author_name FROM Author ORDER BY author_name")
+    authors = cur.fetchall()
+
+    cur.close()
+    con.close()
+
+    #same as above
+    return  {'categories': [dict(author) for author in authors]}
+
+@app.errorhandler(404)
+def page_not_found(e):
+    # Handles "Page Not Found" errors.
+    return render_template(
+        'error.html',
+        error_code="404",
+        error_title="Page Not Found",
+        error_message="Sorry, the page you are looking for does not exist or has been moved."
+    ), 404
+
+@app.errorhandler(500)
+def internal_server_error(e):
+    # Handles "Internal Server Error" when the code crashes.
+    return render_template(
+        'error.html',
+        error_code="500",
+        error_title="Internal Server Error",
+        error_message="We're sorry, something went wrong on our end. We've been notified and are looking into it."
+    ), 500
+@app.route('/checkout', methods=['GET', 'POST'])
+@require_role('Customer')
+def checkout():
+    # This runs for both GET and POST requests
+    user_id = session.get('user_id')
+
+    # This block handles the POST request when the user clicks the final "Checkout" button
+    if request.method == 'POST':
+        success, message = process_checkout_in_database(user_id)
+        if success:
+            flash(message, 'success')
+            return redirect(url_for('home'))
+        else:
+            flash(f"An error occurred during checkout: {message}", 'error')
+            return redirect(url_for('view_cart'))
+
+    # This block handles the GET request to simply show the page
+    # It fetches the cart data to display a summary
+    con = get_db_connection()
+    cur = con.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    cur.execute("""
+        SELECT c.quantity, b.title, b.price, (c.quantity * b.price) as item_total
+        FROM Cart c JOIN Book b ON c.book_id = b.book_id WHERE c.user_id = %s
+    """, (user_id,))
+    cart_items = cur.fetchall()
+    cur.close()
+    con.close()
+
+    # --- THIS IS THE CORRECT PLACEMENT ---
+    # After getting the cart items, check if the list is empty.
+    if not cart_items:
+        flash("Your cart is empty.", "info")
+        return redirect(url_for('view_cart'))
+    # ------------------------------------
+
+    # If the cart is NOT empty, proceed to render the page
+    total = sum(item['item_total'] for item in cart_items)
+    return render_template('checkout.html', cart_items=cart_items, total=total)
 
 
 
 if __name__ == '__main__':
+
+    start_db()
+        
+
     app.run(debug=True)
